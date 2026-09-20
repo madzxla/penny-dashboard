@@ -1,0 +1,237 @@
+.redeem-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.redeem-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 40px 32px;
+  text-align: center;
+}
+
+/* --- Entry state --- */
+
+.redeem-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.redeem-title {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.redeem-hint {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+
+.redeem-input {
+  width: 100%;
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.18em;
+  padding: 18px 8px 18px 16px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.redeem-input::placeholder {
+  color: var(--ink-faint);
+  letter-spacing: 0.18em;
+}
+
+.redeem-input:focus {
+  border-color: var(--brand);
+}
+
+.redeem-submit {
+  width: 100%;
+  background: var(--ink);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px;
+  border-radius: var(--radius);
+  transition: opacity 0.12s ease;
+}
+
+.redeem-submit:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.redeem-submit:not(:disabled):hover { opacity: 0.88; }
+
+/* --- Loading state --- */
+
+.redeem-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.redeem-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: redeem-spin 0.7s linear infinite;
+}
+
+@keyframes redeem-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Found state (awaiting confirm) --- */
+
+.redeem-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.redeem-found-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--success);
+  background: var(--success-tint);
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.redeem-item-name {
+  font-size: 21px;
+  margin-bottom: 4px;
+}
+
+.redeem-item-type {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+
+.redeem-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.redeem-confirm {
+  background: var(--success);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 18px;
+  border-radius: var(--radius);
+  transition: opacity 0.12s ease;
+}
+
+.redeem-confirm:hover { opacity: 0.9; }
+
+.redeem-cancel {
+  color: var(--ink-faint);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px;
+}
+
+.redeem-cancel:hover { color: var(--ink-soft); }
+
+/* --- Success state --- */
+
+.redeem-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: redeem-pop 0.28s cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+@keyframes redeem-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.redeem-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--success-tint);
+  color: var(--success);
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.redeem-success h2 {
+  font-size: 21px;
+  margin-bottom: 4px;
+}
+
+.redeem-success .redeem-item-type { margin-bottom: 28px; }
+
+/* --- Error state --- */
+
+.redeem-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.redeem-error-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.redeem-error-msg {
+  font-size: 14.5px;
+  color: var(--ink);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.redeem-next {
+  width: 100%;
+  background: var(--ink);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: var(--radius);
+}
+
+.redeem-next:hover { opacity: 0.88; }
+
+@media (max-width: 480px) {
+  .redeem-card { padding: 32px 24px; box-shadow: none; border: 1px solid var(--border); }
+  .redeem-input { font-size: 34px; }
+}

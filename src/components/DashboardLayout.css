@@ -1,0 +1,154 @@
+/* ---- Manager shell ---- */
+
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dash-sidebar {
+  width: 232px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.dash-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 8px;
+  margin-bottom: 32px;
+}
+
+.dash-brand-mark {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: -0.02em;
+}
+
+.dash-brand-sub {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.dash-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.dash-nav-link {
+  display: block;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.dash-nav-link:hover {
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.dash-nav-link.active {
+  background: var(--brand-tint);
+  color: var(--brand-ink);
+  font-weight: 600;
+}
+
+.dash-sidebar-footer {
+  padding: 12px 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.dash-restaurant-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-signout {
+  font-size: 13px;
+  color: var(--ink-faint);
+  padding: 4px 0;
+}
+
+.dash-signout:hover { color: var(--danger); }
+
+.dash-main {
+  flex: 1;
+  min-width: 0;
+  padding: 40px 48px;
+}
+
+@media (max-width: 820px) {
+  .dash-shell { flex-direction: column; }
+  .dash-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+  }
+  .dash-brand { margin-bottom: 0; padding: 0; }
+  .dash-nav { flex-direction: row; flex: 1; margin-left: 20px; overflow-x: auto; }
+  .dash-sidebar-footer { border-top: none; padding: 0; margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .dash-restaurant-name { margin-bottom: 0; max-width: 120px; }
+  .dash-main { padding: 24px 16px; }
+}
+
+/* ---- Staff shell: no sidebar, single-purpose ---- */
+
+.staff-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-sunken);
+}
+
+.staff-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.staff-topbar-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.staff-signout {
+  font-size: 13px;
+  color: var(--ink-faint);
+  padding: 6px 8px;
+}
+
+.staff-signout:hover { color: var(--danger); }
+
+.staff-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
