@@ -58,7 +58,7 @@ export default function Redeem() {
         expires_at,
         deal:deals!inner (
           id,
-          item_name,
+          title,
           deal_type,
           discount_percent,
           rest_id
@@ -69,31 +69,26 @@ export default function Redeem() {
       .maybeSingle()
 
     if (error) {
-      setErrorMsg('Something went wrong looking up that code. Try again.')
+      console.error('Error looking up claim:', error)
+      setErrorMsg('Kaut kas nogāja greizi apstiprinot kodu. Lūdzu mēģiniet vēlreiz.')
       setState(STATE.ERROR)
       return
     }
 
     if (!data) {
-      setErrorMsg('No active claim with that code.')
+      setErrorMsg('Šis kods nav derīgs. Pārlieciniaties, ka tas ir pareizi ievadīts.')
       setState(STATE.ERROR)
       return
     }
 
     if (data.status === 'confirmed') {
-      setErrorMsg('This code has already been redeemed.')
+      setErrorMsg('Šis kods jau ir izmantots.')
       setState(STATE.ERROR)
       return
     }
 
     if (data.status === 'expired' || new Date(data.expires_at) < new Date()) {
-      setErrorMsg('This code has expired.')
-      setState(STATE.ERROR)
-      return
-    }
-
-    if (data.status !== 'claimed') {
-      setErrorMsg('This code is not currently redeemable.')
+      setErrorMsg('Šim kodam ir beidzies derīguma termiņš.')
       setState(STATE.ERROR)
       return
     }
@@ -109,10 +104,11 @@ export default function Redeem() {
     // Server-side function handles: marking the claim confirmed, writing
     // the conversions row for billing, and respecting the monthly cap
     // (in-flight claims still confirm unbilled once the cap is hit).
-    const { error } = await supabase.rpc('confirm_claim', { claim_id: claim.id })
+    const { error } = await supabase.rpc('confirm_claim', { p_restaurant_id: restaurant.id, p_staff_code: claim.staff_code })
 
     if (error) {
-      setErrorMsg('Could not confirm this redemption. Try again.')
+      console.error('Error confirming claim:', error)
+      setErrorMsg('Nevarējām apstiprināt šo kodu. Lūdzu mēģiniet vēlreiz.')
       setState(STATE.ERROR)
       return
     }
@@ -125,8 +121,8 @@ export default function Redeem() {
       <div className="redeem-card">
         {state === STATE.ENTER && (
           <form onSubmit={handleLookup} className="redeem-form">
-            <h1 className="redeem-title">Enter code</h1>
-            <p className="redeem-hint">5-digit code from the customer's voucher</p>
+            <h1 className="redeem-title">Apstiprināt kodu</h1>
+            <p className="redeem-hint">Meklē 5 ciparu kodu klienta lietotnē un ievadi to šeit. Pārliecinaties, ka kods ir ievadīts pareizi.</p>
 
             <input
               ref={inputRef}
@@ -142,10 +138,10 @@ export default function Redeem() {
 
             <button
               type="submit"
-              className="redeem-submit"
+              className="primary-button redeem-submit"
               disabled={code.length !== 5}
             >
-              Check code
+              Pārbaudīt
             </button>
           </form>
         )}
@@ -153,26 +149,26 @@ export default function Redeem() {
         {state === STATE.CHECKING && (
           <div className="redeem-status">
             <div className="redeem-spinner" aria-hidden="true" />
-            <p>Checking code…</p>
+            <p>Pārbaudām kodu...</p>
           </div>
         )}
 
         {state === STATE.FOUND && claim && (
           <div className="redeem-found">
-            <div className="redeem-found-badge">Valid code</div>
-            <h2 className="redeem-item-name">{claim.deal.item_name}</h2>
+            <div className="redeem-found-badge">Derīgs kods</div>
+            <h2 className="redeem-item-name">{claim.deal.title}</h2>
             <p className="redeem-item-type">
               {claim.deal.deal_type === 'percentage_off'
-                ? `${claim.deal.discount_percent}% off`
-                : 'Free item'}
+                ? `${claim.deal.discount_percent}% atlaide`
+                : 'Bezmaksas'}
             </p>
 
             <div className="redeem-actions">
-              <button className="redeem-confirm" onClick={handleConfirm}>
-                Confirm redemption
+              <button className="primary-button" onClick={handleConfirm}>
+                Apstiprināt
               </button>
               <button className="redeem-cancel" onClick={resetToEntry}>
-                Cancel
+                Atcelt
               </button>
             </div>
           </div>
@@ -181,17 +177,17 @@ export default function Redeem() {
         {state === STATE.CONFIRMING && (
           <div className="redeem-status">
             <div className="redeem-spinner" aria-hidden="true" />
-            <p>Confirming…</p>
+            <p>Apstiprinām...</p>
           </div>
         )}
 
         {state === STATE.SUCCESS && (
           <div className="redeem-success">
             <div className="redeem-success-icon" aria-hidden="true">✓</div>
-            <h2>Redeemed</h2>
-            <p className="redeem-item-type">{claim?.deal.item_name}</p>
-            <button className="redeem-next" onClick={resetToEntry}>
-              Next code
+            <h2>Apstiprināts</h2>
+            <p className="redeem-item-type">{claim?.deal.title}</p>
+            <button className="primary-button" onClick={resetToEntry}>
+              Nākamais kods
             </button>
           </div>
         )}
@@ -200,8 +196,8 @@ export default function Redeem() {
           <div className="redeem-error-state">
             <div className="redeem-error-icon" aria-hidden="true">!</div>
             <p className="redeem-error-msg">{errorMsg}</p>
-            <button className="redeem-next" onClick={resetToEntry}>
-              Try another code
+            <button className="primary-button" onClick={resetToEntry}>
+              Mēģināt citu kodu
             </button>
           </div>
         )}

@@ -17,6 +17,11 @@
   padding: 36px 32px;
 }
 
+.login-logo {
+  width: 120px;
+  height: auto;
+}
+
 .login-brand {
   font-size: 20px;
   font-weight: 800;
@@ -28,6 +33,7 @@
 .login-title {
   font-size: 22px;
   margin-bottom: 6px;
+  color: #000000;
 }
 
 .login-subtitle {
@@ -92,7 +98,7 @@
 .role-option-title {
   font-size: 13.5px;
   font-weight: 700;
-  color: var(--ink);
+  color: #000000;
 }
 
 .role-option-desc {

@@ -5,8 +5,12 @@ import DashboardLayout from './components/DashboardLayout'
 import Login from './pages/Login'
 import Overview from './pages/Overview'
 import Deals from './pages/Deals'
+import Payments from './pages/Payments'
 import Redeem from './pages/Redeem'
 import Settings from './pages/Settings'
+import SettingsRestaurant from './pages/SettingsRestaurant'
+import SettingsSupport from './pages/SettingsSupport'
+import SettingsAccount from './pages/SettingsAccount'
 import NotAPartner from './pages/NotAPartner'
 
 function RootRedirect() {
@@ -40,9 +44,18 @@ export default function App() {
               element={<ProtectedRoute managerOnly><Deals /></ProtectedRoute>}
             />
             <Route
+              path="/payments"
+              element={<ProtectedRoute managerOnly><Payments /></ProtectedRoute>}
+            />
+            <Route
               path="/settings"
               element={<ProtectedRoute managerOnly><Settings /></ProtectedRoute>}
-            />
+            >
+              <Route index element={<Navigate to="restaurant" replace />} />
+              <Route path="restaurant" element={<SettingsRestaurant />} />
+              <Route path="support" element={<SettingsSupport />} />
+              <Route path="account" element={<SettingsAccount />} />
+            </Route>
             <Route path="/redeem" element={<Redeem />} />
           </Route>
 

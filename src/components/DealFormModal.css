@@ -52,6 +52,15 @@
   background: var(--surface);
 }
 
+.deal-photo-preview {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-top: 4px;
+}
+
 .deal-field input:focus,
 .deal-field select:focus {
   border-color: var(--brand);
@@ -77,7 +86,16 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
-  background: var(--surface);
+  background: var(--surface-sunken);
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.day-toggle:hover {
+  border-color: var(--brand);
+  color: var(--brand);
 }
 
 .day-toggle.selected {

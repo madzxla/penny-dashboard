@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import logoUrl from '../assets/logo.png'
 import './Login.css'
 
 export default function Login() {
@@ -22,8 +23,11 @@ export default function Login() {
       navigate(deviceRole === 'staff' ? '/redeem' : '/overview', { replace: true })
     } catch (err) {
       setError(err.message === 'Invalid login credentials'
-        ? 'Incorrect email or password.'
-        : err.message || 'Something went wrong signing in.')
+        ? 'Nepareizs e-pasts vai parole.'
+        : err.message || 'Mēs nevarējām ielogoties Jūsu kontā.')
+        setError(err.message === 'User is banned'
+        ? 'Jūsu konts ir bloķēts. Lūdzu sazinaties ar mūsu komandu.'
+        : err.message || 'Mēs nevarējām ielogoties Jūsu kontā.')
     } finally {
       setSubmitting(false)
     }
@@ -32,13 +36,13 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-brand">Penny</div>
-        <h1 className="login-title">Partner sign in</h1>
-        <p className="login-subtitle">Manage deals, or hand this device to staff for redemptions.</p>
+        <img src={logoUrl} alt="Penny logo" className="login-logo" />
+        <h1 className="login-title">Laipni lūdzam!</h1>
+        <p className="login-subtitle">Pārvaldi piedāvājumus, vai iedod šo ierīci darbiniekiem, lai apstiprinātu klientus.</p>
 
         <form onSubmit={handleSubmit} className="login-form">
           <label className="login-field">
-            <span>Email</span>
+            <span>E-pasts</span>
             <input
               type="email"
               value={email}
@@ -49,7 +53,7 @@ export default function Login() {
           </label>
 
           <label className="login-field">
-            <span>Password</span>
+            <span>Parole</span>
             <input
               type="password"
               value={password}
@@ -60,7 +64,7 @@ export default function Login() {
           </label>
 
           <div className="login-field">
-            <span>This device is used by</span>
+            <span>Šo ierīci izmantos</span>
             <div className="role-toggle" role="radiogroup" aria-label="Device role">
               <button
                 type="button"
@@ -69,8 +73,8 @@ export default function Login() {
                 className={'role-option' + (deviceRole === 'manager' ? ' selected' : '')}
                 onClick={() => setDeviceRole('manager')}
               >
-                <span className="role-option-title">Manager</span>
-                <span className="role-option-desc">Full access — deals, settings, redemptions</span>
+                <span className="role-option-title">Menedžeris</span>
+                <span className="role-option-desc">Pilna piekļuve piedāvājumiem un iestatījumiem</span>
               </button>
               <button
                 type="button"
@@ -79,20 +83,18 @@ export default function Login() {
                 className={'role-option' + (deviceRole === 'staff' ? ' selected' : '')}
                 onClick={() => setDeviceRole('staff')}
               >
-                <span className="role-option-title">Staff</span>
-                <span className="role-option-desc">Redemptions only — for the counter or till</span>
+                <span className="role-option-title">Darbinieks</span>
+                <span className="role-option-desc">Tikai piedāvājumu apstiprināšanai</span>
               </button>
             </div>
           </div>
-
+      
           {error && <div className="login-error">{error}</div>}
 
-          <button type="submit" className="login-submit" disabled={submitting}>
-            {submitting ? 'Signing in…' : 'Sign in'}
+          <button type="submit" className="login-submit primary-button" disabled={submitting}>
+            {submitting ? 'Lūdzu uzgaidiet...' : 'Ienākt'}
           </button>
         </form>
-
-        <a href="/reset-password" className="login-forgot">Forgot your password?</a>
       </div>
     </div>
   )

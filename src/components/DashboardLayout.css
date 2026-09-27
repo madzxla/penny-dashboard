@@ -20,10 +20,12 @@
 
 .dash-brand {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
+  flex-direction: column;
+  align-items: left;
+  gap: 8px;
   padding: 0 8px;
   margin-bottom: 32px;
+  text-align: left;
 }
 
 .dash-brand-mark {
@@ -31,6 +33,11 @@
   font-weight: 800;
   color: var(--brand);
   letter-spacing: -0.02em;
+}
+
+.staff-logo {
+  width: 150px;
+  height: auto;
 }
 
 .dash-brand-sub {
@@ -46,6 +53,12 @@
   flex: 1;
 }
 
+.dash-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .dash-nav-link {
   display: block;
   padding: 9px 12px;
@@ -57,6 +70,73 @@
   transition: background 0.12s ease, color 0.12s ease;
 }
 
+.dash-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 8px 26px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+.dash-subnav-link {
+  display: block;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dash-subnav-link:hover {
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.dash-subnav-link.active {
+  color: var(--brand-color);
+}
+
+.dash-nav-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.dash-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-nav-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+.dash-nav-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dash-nav-unpaid-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18);
+  flex-shrink: 0;
+}
+
 .dash-nav-link:hover {
   background: var(--surface-sunken);
   color: var(--ink);
@@ -64,7 +144,7 @@
 
 .dash-nav-link.active {
   background: var(--brand-tint);
-  color: var(--brand-ink);
+  color: var(--brand-color);
   font-weight: 600;
 }
 
@@ -77,10 +157,11 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 8px;
+  margin-bottom: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .dash-signout {
