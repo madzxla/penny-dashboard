@@ -39,6 +39,67 @@
   gap: 8px;
 }
 
+.deal-group {
+  border-top: 1px solid var(--border);
+  padding: 14px 0 18px;
+}
+
+.deal-group:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.deal-group-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.deal-group-heading::-webkit-details-marker {
+  display: none;
+}
+
+.deal-group-heading::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid var(--ink-soft);
+  border-bottom: 1.5px solid var(--ink-soft);
+  transform: rotate(-45deg);
+  transition: transform 0.12s ease;
+}
+
+.deal-group[open] > .deal-group-heading::before {
+  transform: rotate(45deg);
+}
+
+.deal-group-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.deal-group-count {
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.deal-group .deals-list {
+  margin-top: 12px;
+}
+
+.deal-group-empty {
+  margin: 12px 0 0 17px;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
 .deal-row {
   position: relative;
   background: var(--surface);
@@ -49,6 +110,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.deal-row.has-image {
+  overflow: hidden;
+}
+
+.deal-row-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.deal-row.has-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.36));
+  pointer-events: none;
+}
+
+.deal-row.has-image > :not(.deal-row-background) {
+  z-index: 2;
 }
 
 .deal-row-main {
@@ -71,6 +157,22 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.deal-row-top .deal-food-sos-badge {
+  width: 21px;
+  height: 21px;
+}
+
+.deal-row-top .deal-food-sos-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.deal-row.has-image .deal-name,
+.deal-row.has-image .deal-meta {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .deal-status-pill {

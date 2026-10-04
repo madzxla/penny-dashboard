@@ -55,6 +55,32 @@ function restaurantIsOpenNow(restaurant) {
   return currentMinutes >= startMinutes || currentMinutes < endMinutes
 }
 
+function getDealAvailability(deal, restaurant, capReached) {
+  const isPausedBySchedule = !dealIsInSchedule(deal)
+  const isPausedByRestaurantHours = !restaurantIsOpenNow(restaurant)
+  const isPausedByManualState = !deal.active
+  const isPaused = capReached || isPausedByManualState || isPausedBySchedule || isPausedByRestaurantHours
+
+  let statusText = 'Aktīvs'
+  if (isPaused) {
+    if (capReached) {
+      statusText = 'Automātiski pauzēts'
+    } else if (isPausedBySchedule) {
+      statusText = 'Ārpus grafika'
+    } else if (isPausedByRestaurantHours) {
+      statusText = 'Ārpus darba laika'
+    } else if (isPausedByManualState) {
+      statusText = 'Pauzēts'
+    }
+  }
+
+  return {
+    isPaused,
+    toggleDisabled: capReached || isPausedBySchedule || isPausedByRestaurantHours,
+    statusText,
+  }
+}
+
 export default function Deals() {
   const { restaurant } = useAuth()
   const [deals, setDeals] = useState([])
@@ -133,6 +159,22 @@ export default function Deals() {
   const openEdit = (deal) => { setEditingDeal(deal); setModalOpen(true) }
   const closeModal = () => { setModalOpen(false); setEditingDeal(null) }
   const onSaved = () => { closeModal(); loadDeals() }
+  const dealsWithAvailability = deals.map((deal) => ({
+    deal,
+    availability: getDealAvailability(deal, restaurant, capReached),
+  }))
+  const dealGroups = [
+    {
+      key: 'active',
+      title: 'Aktīvie piedāvājumi',
+      items: dealsWithAvailability.filter(({ availability }) => !availability.isPaused),
+    },
+    {
+      key: 'inactive',
+      title: 'Neaktīvie piedāvājumi',
+      items: dealsWithAvailability.filter(({ availability }) => availability.isPaused),
+    },
+  ]
 
   return (
     <div className="deals-page">
@@ -159,66 +201,67 @@ export default function Deals() {
             </div>
           )}
 
-          <div className="deals-list">
-            {deals.map((deal) => {
-              const scheduledNow = dealIsInSchedule(deal)
-              const restaurantOpenNow = restaurantIsOpenNow(restaurant)
-              const isPausedBySchedule = !scheduledNow
-              const isPausedByRestaurantHours = !restaurantOpenNow
-              const isPausedByManualState = !deal.active
-              const isPaused = capReached || isPausedByManualState || isPausedBySchedule || isPausedByRestaurantHours
-              const toggleDisabled = capReached || isPausedBySchedule || isPausedByRestaurantHours
-
-              let statusText = 'Aktīvs'
-              if (isPaused) {
-                if (capReached) {
-                  statusText = 'Automātiski pauzēts'
-                } else if (isPausedBySchedule) {
-                  statusText = 'Ārpus grafika'
-                } else if (isPausedByRestaurantHours) {
-                  statusText = 'Ārpus darba laika'
-                } else if (isPausedByManualState) {
-                  statusText = 'Pauzēts'
-                }
-              }
-
-              return (
-                <div key={deal.id} className="deal-row">
-                  <span className={'deal-status-pill' + (isPaused ? '' : ' active')}>
-                    {statusText}
-                  </span>
-                  <div className="deal-row-main">
-                    <div className="deal-row-top">
-                      <span className="deal-name">{deal.title}</span>
-                    </div>
-                    <span className="deal-meta">
-                      {deal.deal_type === 'percentage_off'
-                        ? `${deal.discount_percent}% atlaide`
-                        : 'Bezmaksas'}
-                      {deal.min_spend ? ` · min. pirkums €${deal.min_spend}` : ''}
-                    </span>
-                  </div>
-                  <div className="deal-row-actions">
-                    <button className="deal-edit-btn" onClick={() => softDeleteDeal(deal)}>
-                      <span className="deal-btn-icon" aria-hidden="true">🗑</span>
-                    </button>
-                    <button className="deal-edit-btn" onClick={() => openEdit(deal)}>
-                      <span className="deal-btn-icon" aria-hidden="true">✎</span>
-                      Rediģēt
-                    </button>
-                    <button
-                      className="deal-toggle-btn"
-                      disabled={toggleDisabled}
-                      onClick={() => toggleActive(deal)}
-                    >
-                      <span className="deal-btn-icon" aria-hidden="true">{isPaused ? '▶' : '⏸'}</span>
-                      {isPaused ? 'Aktivizēt' : 'Pauzēt'}
-                    </button>
-                  </div>
+          {dealGroups.map((group) => (
+            <details key={group.key} className="deal-group" open>
+              <summary className="deal-group-heading">
+                <span className="deal-group-title">{group.title}</span>
+                <span className="deal-group-count">{group.items.length}</span>
+              </summary>
+              {group.items.length > 0 ? (
+                <div className="deals-list">
+                  {group.items.map(({ deal, availability: { isPaused, toggleDisabled, statusText } }) => {
+                    return (
+                      <div key={deal.id} className={`deal-row${deal.photo_url ? ' has-image' : ''}`}>
+                        {deal.photo_url && (
+                          <img className="deal-row-background" src={deal.photo_url} alt="" aria-hidden="true" />
+                        )}
+                        <span className={'deal-status-pill' + (isPaused ? '' : ' active')}>
+                          {statusText}
+                        </span>
+                        <div className="deal-row-main">
+                          <div className="deal-row-top">
+                            <span className="deal-name">{deal.title}</span>
+                            {deal.food_sos && (
+                              <span className="deal-food-sos-badge" title="Pārtikas SOS" aria-label="Pārtikas SOS">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                  <path d="M20.8 3.2C12.1 3.2 5.7 5.1 4 10.5c-.9 2.8.8 5.4 3.5 5.4 5.8 0 9.8-5.7 13.3-12.7ZM3.4 21c2.3-5.2 6.6-8.8 12.1-11.8" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          <span className="deal-meta">
+                            {deal.deal_type === 'percentage_off'
+                              ? `${deal.discount_percent}% atlaide`
+                              : 'Bezmaksas'}
+                            {deal.min_spend ? ` · min. pirkums €${deal.min_spend}` : ''}
+                          </span>
+                        </div>
+                        <div className="deal-row-actions">
+                          <button className="deal-edit-btn" onClick={() => softDeleteDeal(deal)}>
+                            <span className="deal-btn-icon" aria-hidden="true">🗑</span>
+                          </button>
+                          <button className="deal-edit-btn" onClick={() => openEdit(deal)}>
+                            <span className="deal-btn-icon" aria-hidden="true">✎</span>
+                            Rediģēt
+                          </button>
+                          <button
+                            className="deal-toggle-btn"
+                            disabled={toggleDisabled}
+                            onClick={() => toggleActive(deal)}
+                          >
+                            <span className="deal-btn-icon" aria-hidden="true">{isPaused ? '▶' : '⏸'}</span>
+                            {isPaused ? 'Aktivizēt' : 'Pauzēt'}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
-          </div>
+              ) : (
+                <p className="deal-group-empty">Nav piedāvājumu.</p>
+              )}
+            </details>
+          ))}
         </>
       )}
 
